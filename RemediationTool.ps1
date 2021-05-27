@@ -18,7 +18,10 @@ if (!$groups) {
 }
 
 #Remove Packages from APP V Commander
-
+$packages = Get-AppvClientPackage | Where-Object {$_.Name -Like '*Microsoft Office*'}
+foreach ($package in $packages) {
+    Remove-AppvClientPackage -Name $package
+}
 
 ####Set Loop that goes through Access, Project, Visio
 $remApps = @('ACCESS', 'PROJECT', 'VISIO')
