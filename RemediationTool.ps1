@@ -1,14 +1,20 @@
 #Remove User from all APP V AD Groups
-$user = $env:USERNAME
-$groups = Get-ADGroup -Filter {Name -like "AppV - Microsoft"}
+$user = Read-Host "Enter LAN ID: "
+$groups = (Get-ADUser $user -Properties MemberOf).MemberOf | Where-Object {$_ -like 'CN=*Appv - Microsoft*,*'} 
+
 
 foreach ($group in $groups) {
-    try {
-        Remove-ADPrincipalGroupMembership $user.samaccountname -member $group -confirm:$false -ErrorAction Stop
-    }
-    catch {
-        write-warning "$_ Error removing user $($user.samaccountname)"
-    }
+        try {
+            Write-Host $group
+            Remove-ADPrincipalGroupMembership $user -member $group -confirm:$false -ErrorAction Stop
+        }
+        catch {
+            write-warning "$_ Error removing user $($user)"
+        }    
+}
+
+if (!$groups) {
+    Write-Output "The user is not a member of any of the groups needed to be removed."
 }
 
 #Remove Packages from APP V Commander
