@@ -1,12 +1,12 @@
 #Remove User from all APP V AD Groups
 $user = Read-Host "Enter LAN ID: "
-$groups = (Get-ADUser $user -Properties MemberOf).MemberOf | Where-Object {$_ -like 'CN=*Appv - Microsoft*,*'} 
+$groups = (Get-ADUser wminc001 -Properties MemberOf).MemberOf | Where-Object {$_ -like 'CN=*Appv - Microsoft*,*'} 
 
 
 foreach ($group in $groups) {
         try {
             Write-Host $group
-            Remove-ADPrincipalGroupMembership $user -member $group -confirm:$false -ErrorAction Stop
+            Remove-ADGroupMember -Identity $group -Members wminc001
         }
         catch {
             write-warning "$_ Error removing user $($user)"
@@ -21,6 +21,10 @@ if (!$groups) {
 $packages = Get-AppvClientPackage | Where-Object {$_.Name -Like '*Microsoft Office*'}
 foreach ($package in $packages) {
     Remove-AppvClientPackage -Name $package
+}
+
+if (!packages) {
+    Write-Output "There are no AppV Packages to be removed."
 }
 
 ####Set Loop that goes through Access, Project, Visio
