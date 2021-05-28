@@ -1,12 +1,12 @@
 #Remove User from all APP V AD Groups
 $user = Read-Host "Enter LAN ID: "
-$groups = (Get-ADUser wminc001 -Properties MemberOf).MemberOf | Where-Object {$_ -like 'CN=*Appv - Microsoft*,*'} 
+$groups = (Get-ADUser $user -Properties MemberOf).MemberOf | Where-Object {$_ -like 'CN=*Appv - Microsoft*,*'} 
 
 
 foreach ($group in $groups) {
         try {
             Write-Host $group
-            Remove-ADGroupMember -Identity $group -Members wminc001
+            Remove-ADGroupMember -Identity $group -Members $user
         }
         catch {
             write-warning "$_ Error removing user $($user)"
